@@ -1,0 +1,290 @@
+/* Custom Scrollbar Styles (Light & Dark) */
+@layer base {
+  /* Applies to all scrollable elements */
+  *[data-slot],
+  *[data-sidebar],
+  *[data-scroll],
+  .scrollbar,
+  .overflow-auto,
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .overflow-scroll,
+  .overflow-y-scroll,
+  .overflow-x-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.neutral.300') theme('colors.neutral.100');
+  }
+
+  /* Webkit browsers */
+  *[data-slot]::-webkit-scrollbar,
+  *[data-sidebar]::-webkit-scrollbar,
+  *[data-scroll]::-webkit-scrollbar,
+  .scrollbar::-webkit-scrollbar,
+  .overflow-auto::-webkit-scrollbar,
+  .overflow-y-auto::-webkit-scrollbar,
+  .overflow-x-auto::-webkit-scrollbar,
+  .overflow-scroll::-webkit-scrollbar,
+  .overflow-y-scroll::-webkit-scrollbar,
+  .overflow-x-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+
+  *[data-slot]::-webkit-scrollbar-thumb,
+  *[data-sidebar]::-webkit-scrollbar-thumb,
+  *[data-scroll]::-webkit-scrollbar-thumb,
+  .scrollbar::-webkit-scrollbar-thumb,
+  .overflow-auto::-webkit-scrollbar-thumb,
+  .overflow-y-auto::-webkit-scrollbar-thumb,
+  .overflow-x-auto::-webkit-scrollbar-thumb,
+  .overflow-scroll::-webkit-scrollbar-thumb,
+  .overflow-y-scroll::-webkit-scrollbar-thumb,
+  .overflow-x-scroll::-webkit-scrollbar-thumb {
+    background: theme('colors.neutral.300');
+    border-radius: 6px;
+    border: 2px solid theme('colors.neutral.100');
+    min-height: 40px;
+    min-width: 40px;
+    transition: background 0.2s;
+  }
+
+  *[data-slot]::-webkit-scrollbar-thumb:hover,
+  *[data-sidebar]::-webkit-scrollbar-thumb:hover,
+  *[data-scroll]::-webkit-scrollbar-thumb:hover,
+  .scrollbar::-webkit-scrollbar-thumb:hover,
+  .overflow-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-scroll::-webkit-scrollbar-thumb:hover,
+  .overflow-y-scroll::-webkit-scrollbar-thumb:hover,
+  .overflow-x-scroll::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.neutral.400');
+  }
+
+  *[data-slot]::-webkit-scrollbar-track,
+  *[data-sidebar]::-webkit-scrollbar-track,
+  *[data-scroll]::-webkit-scrollbar-track,
+  .scrollbar::-webkit-scrollbar-track,
+  .overflow-auto::-webkit-scrollbar-track,
+  .overflow-y-auto::-webkit-scrollbar-track,
+  .overflow-x-auto::-webkit-scrollbar-track,
+  .overflow-scroll::-webkit-scrollbar-track,
+  .overflow-y-scroll::-webkit-scrollbar-track,
+  .overflow-x-scroll::-webkit-scrollbar-track {
+    background: theme('colors.neutral.100');
+    border-radius: 6px;
+  }
+
+  html.dark *[data-slot],
+  html.dark *[data-sidebar],
+  html.dark *[data-scroll],
+  html.dark .scrollbar,
+  html.dark .overflow-auto,
+  html.dark .overflow-y-auto,
+  html.dark .overflow-x-auto,
+  html.dark .overflow-scroll,
+  html.dark .overflow-y-scroll,
+  html.dark .overflow-x-scroll {
+    scrollbar-color: theme('colors.neutral.700') theme('colors.neutral.900');
+  }
+
+  html.dark *[data-slot]::-webkit-scrollbar-thumb,
+  html.dark *[data-sidebar]::-webkit-scrollbar-thumb,
+  html.dark *[data-scroll]::-webkit-scrollbar-thumb,
+  html.dark .scrollbar::-webkit-scrollbar-thumb,
+  html.dark .overflow-auto::-webkit-scrollbar-thumb,
+  html.dark .overflow-y-auto::-webkit-scrollbar-thumb,
+  html.dark .overflow-x-auto::-webkit-scrollbar-thumb,
+  html.dark .overflow-scroll::-webkit-scrollbar-thumb,
+  html.dark .overflow-y-scroll::-webkit-scrollbar-thumb,
+  html.dark .overflow-x-scroll::-webkit-scrollbar-thumb {
+    background: theme('colors.neutral.700');
+    border: 2px solid theme('colors.neutral.900');
+  }
+
+  html.dark *[data-slot]::-webkit-scrollbar-thumb:hover,
+  html.dark *[data-sidebar]::-webkit-scrollbar-thumb:hover,
+  html.dark *[data-scroll]::-webkit-scrollbar-thumb:hover,
+  html.dark .scrollbar::-webkit-scrollbar-thumb:hover,
+  html.dark .overflow-auto::-webkit-scrollbar-thumb:hover,
+  html.dark .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+  html.dark .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+  html.dark .overflow-scroll::-webkit-scrollbar-thumb:hover,
+  html.dark .overflow-y-scroll::-webkit-scrollbar-thumb:hover,
+  html.dark .overflow-x-scroll::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.neutral.600');
+  }
+
+  html.dark *[data-slot]::-webkit-scrollbar-track,
+  html.dark *[data-sidebar]::-webkit-scrollbar-track,
+  html.dark *[data-scroll]::-webkit-scrollbar-track,
+  html.dark .scrollbar::-webkit-scrollbar-track,
+  html.dark .overflow-auto::-webkit-scrollbar-track,
+  html.dark .overflow-y-auto::-webkit-scrollbar-track,
+  html.dark .overflow-x-auto::-webkit-scrollbar-track,
+  html.dark .overflow-scroll::-webkit-scrollbar-track,
+  html.dark .overflow-y-scroll::-webkit-scrollbar-track,
+  html.dark .overflow-x-scroll::-webkit-scrollbar-track {
+    background: theme('colors.neutral.900');
+  }
+}
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans:
+        'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+:root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.87 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.87 0 0);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.145 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.145 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.985 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
