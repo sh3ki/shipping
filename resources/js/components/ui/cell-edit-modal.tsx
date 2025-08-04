@@ -25,6 +25,8 @@ type CellEditModalProps = {
     cellY: number; 
   };
   existingData?: CellInfo;
+  onRequestMove?: (fromCellId: string) => void;
+  onCellInfoDeleted?: (cellId: string) => void;
 };
 
 const SHIPPING_LINES = [
@@ -73,7 +75,9 @@ export default function CellEditModal({
   cellId, 
   cellName, 
   position, 
-  existingData 
+  existingData, 
+  onRequestMove, 
+  onCellInfoDeleted
 }: CellEditModalProps) {
   const [formData, setFormData] = useState({
     shipping_line: existingData?.shipping_line || '',
@@ -208,17 +212,20 @@ export default function CellEditModal({
   };
 
   const handleMove = () => {
-    // TODO: Implement move functionality
-    console.log('Move functionality to be implemented');
     setShowConfirmModal(false);
+    if (onRequestMove) {
+      onRequestMove(cellId);
+    }
   };
 
   const handleDelete = () => {
     setProcessing(true);
-    
     router.delete(route('staff.cell-info.destroy', { cell_id: cellId }), {
       preserveScroll: true,
       onSuccess: () => {
+        if (typeof onCellInfoDeleted === 'function') {
+          onCellInfoDeleted(cellId);
+        }
         onClose();
         setProcessing(false);
         setShowConfirmModal(false);
@@ -323,7 +330,7 @@ export default function CellEditModal({
       case 'move':
         return {
           title: 'Move Cell Data',
-          description: 'Are you sure you want to move this cell data? This functionality is coming soon.',
+          description: 'Are you sure you want to move this cell information to another cell? You will be prompted to pick a new cell with no information.',
           confirmText: 'Move'
         };
       case 'delete':

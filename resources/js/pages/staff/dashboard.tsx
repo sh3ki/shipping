@@ -6,7 +6,9 @@ import { Head, usePage } from '@inertiajs/react';
 import React, { useState, useRef, useEffect } from 'react';
 import { Grid } from '@/components/Grid';
 import CellEditModal from '@/components/ui/cell-edit-modal';
+// import SelectCellsModal from '@/components/ui/select-cells-modal';
 import echo from '../../lib/echo';
+import { listenToCellsInformationEvents } from '../../lib/cellsInformationListener';
 import { Inertia, Method } from '@inertiajs/inertia';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -49,6 +51,7 @@ export default function Dashboard() {
         cellsInfo?: CellInfo[];
     };
     const { props } = usePage<DashboardPageProps>();
+
     const [showTooltip, setShowTooltip] = useState(false);
     const [showCellModal, setShowCellModal] = useState(false);
     const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
@@ -60,6 +63,8 @@ export default function Dashboard() {
         cellX: 0, 
         cellY: 0 
     });
+    // Move mode state
+    const [moveFromCellId, setMoveFromCellId] = useState<string | null>(null);
     const gridRef = useRef<HTMLDivElement>(null);
 
     // Function to calculate cell position in the grid
@@ -91,7 +96,32 @@ export default function Dashboard() {
     const mapWidth = props.map_width ?? 1;
     const [categories, setCategories] = useState<Category[]>(props.categories || []);
     const [cells, setCells] = useState<Cell[]>(props.cells || []);
-    const [cellsInfo] = useState<CellInfo[]>(props.cellsInfo || []);
+    const [cellsInfo, setCellsInfo] = useState<CellInfo[]>(props.cellsInfo || []);
+    // Listen for real-time cells information events
+    useEffect(() => {
+        const stopListening = listenToCellsInformationEvents(
+            (cellInfo) => {
+                setCellsInfo((prev) => {
+                    const idx = prev.findIndex((info) => info.cell_id === cellInfo.cell_id);
+                    if (idx !== -1) {
+                        // Update existing cell info
+                        const updated = [...prev];
+                        updated[idx] = cellInfo;
+                        return updated;
+                    } else {
+                        // Add new cell info
+                        return [...prev, cellInfo];
+                    }
+                });
+            },
+            (cellId) => {
+                setCellsInfo((prev) => prev.filter(info => info.cell_id !== cellId));
+            }
+        );
+        return () => {
+            stopListening();
+        };
+    }, []);
 
     // Listen for real-time dimension and category updates
     useEffect(() => {
@@ -208,7 +238,15 @@ export default function Dashboard() {
         setHoveredCellData(null);
     }
 
-    function handleCellClick(cell_id: string, cell: Cell | undefined, e?: React.MouseEvent) {
+    function handleCellClick(cell_id: string, cell: Cell | undefined) {
+        // If in move mode, only allow picking a cell with no info
+        if (moveFromCellId) {
+            const hasInfo = cellsInfo.some(info => info.cell_id === cell_id);
+            if (!hasInfo && cell) {
+                handleMoveToCell(cell_id);
+            }
+            return;
+        }
         // Only allow clicks on selected cells
         if (!cell || cell.status !== 'selected') return;
 
@@ -242,9 +280,45 @@ export default function Dashboard() {
         setShowCellModal(true);
     }
 
+    // Called when user picks a cell to move info to
+    function handleMoveToCell(toCellId: string) {
+        if (!moveFromCellId) return;
+        // Call move API
+        Inertia.post(route('staff.cell-info.move'), {
+            from_cell_id: moveFromCellId,
+            to_cell_id: toCellId
+        }, {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                // If flash data present, update only the two cells
+                const flash = (page.props.flash || {}) as any;
+                if (flash.moved_cell_info && flash.moved_from_cell_id) {
+                    const moved = flash.moved_cell_info;
+                    const fromId = flash.moved_from_cell_id;
+                    setCellsInfo(prev => {
+                        // Remove old cell info, add/update new one
+                        const filtered = prev.filter(info => info.cell_id !== fromId && info.cell_id !== moved.cell_id);
+                        return [...filtered, moved];
+                    });
+                }
+                setMoveFromCellId(null);
+            },
+            onFinish: () => {
+                setMoveFromCellId(null);
+            }
+        });
+    }
+
     function handleCloseModal() {
         setShowCellModal(false);
         setSelectedCellId(null);
+    }
+
+    // Called from CellEditModal when move is requested
+    function handleRequestMove(fromCellId: string) {
+        setShowCellModal(false);
+        setSelectedCellId(null);
+        setMoveFromCellId(fromCellId);
     }
 
     // Get cell info for the selected cell
@@ -252,6 +326,14 @@ export default function Dashboard() {
     const selectedCellInfo = selectedCellId ? cellsInfo.find(info => info.cell_id === selectedCellId) : undefined;
 
     // mapLength, mapWidth, categories, and cells now come from state, updated in real-time
+
+    // Highlight empty cells in move mode
+    const moveModeHighlightCell = moveFromCellId
+        ? (cell: Cell) => {
+            const hasInfo = cellsInfo.some(info => info.cell_id === cell.cell_id);
+            return !hasInfo;
+        }
+        : undefined;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -270,6 +352,7 @@ export default function Dashboard() {
                             onCellClick={handleCellClick}
                             highlightedCell={selectedCellId || undefined}
                             borderColor="input"
+                        // highlightCell={moveModeHighlightCell}
                         />
                     </div>
                 </div>
@@ -297,6 +380,10 @@ export default function Dashboard() {
                         cellName={selectedCell.name}
                         position={cellModalPosition}
                         existingData={selectedCellInfo}
+                        onRequestMove={handleRequestMove}
+                        onCellInfoDeleted={(cellId) => {
+                            setCellsInfo(prev => prev.filter(info => info.cell_id !== cellId));
+                        }}
                     />
                 )}
             </div>

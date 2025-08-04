@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import echo from '../../lib/echo';
 import { Inertia, Method } from '@inertiajs/inertia';
 import CategoryModal, { Category, Cell } from '@/components/category-modal';
+import CellManagementModal from '@/components/cell-management-modal';
 import { Grid } from '@/components/Grid';
 import Modal from '@/components/ui/modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
@@ -115,6 +116,7 @@ export default function AdminMapLayout(props: AdminMapLayoutProps) {
     }, []);
     const [showModal, setShowModal] = useState(false);
     const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showCellModal, setShowCellModal] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
     // const [hoveredCell, setHoveredCell] = useState<string | null>(null);
     const [hoveredCellData, setHoveredCellData] = useState<Cell | null>(null);
@@ -226,6 +228,14 @@ export default function AdminMapLayout(props: AdminMapLayoutProps) {
                 <div className="w-full flex justify-end gap-2 mb-2">
                     <button
                         type="button"
+                        onClick={() => setShowCellModal(true)}
+                        className="px-3 py-1.5 text-xs font-semibold rounded-md border border-muted-foreground bg-primary-foreground text-primary shadow hover:bg-primary hover:text-primary-foreground transition-colors"
+                        style={{ outline: 'none', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+                    >
+                        Cell
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setShowCategoryModal(true)}
                         className="px-3 py-1.5 text-xs font-semibold rounded-md border border-muted-foreground bg-primary-foreground text-primary shadow hover:bg-primary hover:text-primary-foreground transition-colors"
                         style={{ outline: 'none', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
@@ -238,7 +248,7 @@ export default function AdminMapLayout(props: AdminMapLayoutProps) {
                         className="px-3 py-1.5 text-xs font-semibold rounded-md border border-muted-foreground bg-primary-foreground text-primary shadow hover:bg-primary hover:text-primary-foreground transition-colors"
                         style={{ outline: 'none', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
                     >
-                        Dimension
+                        Dimensions
                     </button>
                 </div>
 
@@ -312,16 +322,24 @@ export default function AdminMapLayout(props: AdminMapLayoutProps) {
                     processing={dimensionProcessing}
                 />
 
-                {/* Category Management Modal */}
-                <CategoryModal
-                    open={showCategoryModal}
-                    onClose={() => setShowCategoryModal(false)}
-                    categories={categories}
-                    cells={cells}
-                    mapLength={mapLength}
-                    mapWidth={mapWidth}
-                    onRefresh={handleRefresh}
-                />
+            {/* Category Management Modal */}
+            <CategoryModal
+                open={showCategoryModal}
+                onClose={() => setShowCategoryModal(false)}
+                categories={categories}
+                cells={cells}
+                mapLength={mapLength}
+                mapWidth={mapWidth}
+                onRefresh={handleRefresh}
+            />
+            {/* Cell Management Modal */}
+            <CellManagementModal
+                open={showCellModal}
+                onClose={() => setShowCellModal(false)}
+                cells={cells}
+                categories={categories}
+                onRefresh={handleRefresh}
+            />
 
                 {/* Main Grid with cell status and category color */}
                 <div

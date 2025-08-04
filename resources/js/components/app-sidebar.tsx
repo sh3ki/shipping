@@ -4,11 +4,12 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Settings, LayoutGrid, LogOut } from 'lucide-react';
+import { Settings, LayoutGrid, LogOut, Container } from 'lucide-react';
 import AppLogo from './app-logo';
 
 import { usePage } from '@inertiajs/react';
-import { Map } from 'lucide-react';
+import { Map, MessageSquareText } from 'lucide-react'; 
+
 
 export function getSidebarNavItems(role?: string): NavItem[] {
     if (role === 'admin') {
@@ -23,6 +24,16 @@ export function getSidebarNavItems(role?: string): NavItem[] {
                 href: '/admin/map_layout',
                 icon: Map,
             },
+            {
+                title: 'Shipping History',
+                href: '/admin/shipping_history',
+                icon: Container,
+            },
+            {
+                title: 'Messages',
+                href: '/admin/messages',
+                icon: MessageSquareText,
+            }
         ];
     } else if (role === 'staff') {
         return [
@@ -31,15 +42,14 @@ export function getSidebarNavItems(role?: string): NavItem[] {
                 href: '/staff/dashboard',
                 icon: LayoutGrid,
             },
+            {
+                title: 'Messages',
+                href: '/staff/messages',
+                icon: MessageSquareText,
+            },
         ];
     }
-    return [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-            icon: LayoutGrid,
-        },
-    ];
+    return [];
 }
 
 const footerNavItems: NavItem[] = [

@@ -37,6 +37,7 @@ interface CategoryModalProps {
 export default function CategoryModal({ open, onClose, categories, cells, mapLength, mapWidth, onRefresh }: CategoryModalProps) {
   const [showViewCells, setShowViewCells] = useState(false);
   const [viewCellIds, setViewCellIds] = useState<string[]>([]);
+  const [viewCategoryName, setViewCategoryName] = useState<string>('');
   // Confirmation modal for update category
   const [showConfirmUpdateModal, setShowConfirmUpdateModal] = useState(false);
   const [pendingUpdate, setPendingUpdate] = useState(false);
@@ -314,6 +315,7 @@ export default function CategoryModal({ open, onClose, categories, cells, mapLen
                                 className="text-green-800 hover:text-green-400 transition-colors"
                                 onClick={() => {
                                   setViewCellIds(cellIds);
+                                  setViewCategoryName(category.name);
                                   setShowViewCells(true);
                                 }}
                               >
@@ -373,6 +375,7 @@ export default function CategoryModal({ open, onClose, categories, cells, mapLen
           mapLength={mapLength}
           mapWidth={mapWidth}
           cellIds={viewCellIds}
+          title={viewCategoryName ? `View Category ${viewCategoryName}` : 'View Category'}
         />
       </>
     );

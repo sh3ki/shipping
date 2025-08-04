@@ -35,6 +35,7 @@ type GridProps = {
   onCellClick?: (cell_id: string, cell: Cell | undefined, e: React.MouseEvent) => void;
   highlightedCell?: string;
   borderColor?: string; // 'input' | 'ring' (CSS var)
+  moveModeHighlightCell?: (cell: Cell) => boolean;
 };
 
 export const Grid: React.FC<GridProps> = ({
@@ -48,6 +49,7 @@ export const Grid: React.FC<GridProps> = ({
   onCellClick,
   highlightedCell,
   borderColor = 'ring',
+  moveModeHighlightCell,
 }) => {
   const borderVar = borderColor === 'input' ? 'var(--input)' : 'var(--ring)';
   const [hoveredCellId, setHoveredCellId] = React.useState<string | null>(null);
@@ -80,6 +82,9 @@ export const Grid: React.FC<GridProps> = ({
           const dimmed = hasInfo && isSelected;
           const isHovered = hoveredCellId === cell_id;
 
+          // Move mode highlight logic
+          const isMoveHighlight = moveModeHighlightCell && cell && moveModeHighlightCell(cell);
+
           // Border logic
           let borderColorStyle = borderVar;
           let borderWidthStyle = '1px';
@@ -87,12 +92,18 @@ export const Grid: React.FC<GridProps> = ({
             borderColorStyle = 'var(--primary)';
             borderWidthStyle = '2px';
           }
+          if (isMoveHighlight) {
+            borderColorStyle = '#2563eb';
+            borderWidthStyle = '2.5px';
+          }
 
           // Outer cell classes
           const outerClass = [
             'border',
             'relative',
-            isSelected ? 'cursor-pointer z-10' : 'cursor-default',
+            isSelected ? 'cursor-pointer z-10' : '',
+            isMoveHighlight ? 'cursor-pointer ring-2 ring-blue-500 z-20' : '',
+            !isSelected && !isMoveHighlight ? 'cursor-default' : '',
             dimmed ? 'border-primary border-2' : '',
           ].filter(Boolean).join(' ');
 
@@ -103,6 +114,8 @@ export const Grid: React.FC<GridProps> = ({
                 dimmed ? 'brightness-50' : '',
                 'hover:brightness-50 hover:scale-[1.08] hover:shadow-xl',
               ].filter(Boolean).join(' ')
+            : isMoveHighlight
+            ? 'w-full h-full bg-blue-100 animate-pulse'
             : '';
 
           return (
@@ -119,14 +132,14 @@ export const Grid: React.FC<GridProps> = ({
                 minHeight: 0,
                 boxShadow: isHighlighted ? '0 0 0 2px var(--primary)' : undefined,
                 transform: isHighlighted ? 'scale(1.02)' : 'scale(1)',
-                zIndex: isHighlighted ? 10 : 1,
+                zIndex: isHighlighted ? 10 : isMoveHighlight ? 20 : 1,
                 padding: 0,
               }}
               onMouseEnter={e => {
                 setHoveredCellId(cell_id);
                 onCellMouseEnter?.(cell_id, cell, e);
               }}
-              onMouseLeave={e => {
+              onMouseLeave={() => {
                 setHoveredCellId(null);
                 onCellMouseLeave?.();
               }}
@@ -137,7 +150,7 @@ export const Grid: React.FC<GridProps> = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  background: isSelected && category ? category.color : 'transparent',
+                  background: isSelected && category ? category.color : isMoveHighlight ? '#dbeafe' : 'transparent',
                   borderRadius: 'inherit',
                 }}
               />

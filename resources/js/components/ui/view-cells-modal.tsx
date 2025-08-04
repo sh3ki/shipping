@@ -15,9 +15,10 @@ export type ViewCellsModalProps = {
   mapLength: number;
   mapWidth: number;
   cellIds: string[];
+  title: string;
 };
 
-export default function ViewCellsModal({ open, onClose, cells, categories, mapLength, mapWidth, cellIds }: ViewCellsModalProps) {
+export default function ViewCellsModal({ open, onClose, cells, categories, mapLength, mapWidth, cellIds, title }: ViewCellsModalProps) {
   // Helper: get color for a cell based on its category_id
   function getCellColor(cell: Cell | undefined): string | undefined {
     if (!cell || !cell.category_id) return undefined;
@@ -95,7 +96,9 @@ export default function ViewCellsModal({ open, onClose, cells, categories, mapLe
         >
           <span aria-hidden>×</span>
         </button>
-        <h2 className="text-lg font-semibold mb-2 text-center text-foreground">View Cells</h2>
+        <h2 className="text-lg font-semibold mb-2 text-center text-foreground">
+          {Array.isArray(title) ? title.join(' ') : title}
+        </h2>
         <div
           className="grid gap-0.5 w-full h-full mb-2"
           style={{
